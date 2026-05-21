@@ -106,43 +106,7 @@
 4. 在「开发版本」中点击「选为体验版」
 5. 体验版可以被所有体验成员使用，更稳定
 
----
-
-## 📤 上传到 GitHub 保存
-
-### 方法一：用 VS Code（推荐）
-
-```bash
-# 1. 在 VS Code 中打开终端 (Ctrl+`)
-# 2. 进入项目目录
-cd e:/moxingdaima/xiaochengxu
-
-# 3. 初始化 Git 仓库
-git init
-
-# 4. 添加所有文件
-git add .
-
-# 5. 提交
-git commit -m "爱心减重计划小程序 - 校园版 v1.0"
-
-# 6. 连接 GitHub（先在 GitHub.com 创建一个新仓库）
-git remote add origin https://github.com/你的用户名/仓库名.git
-
-# 7. 推送到 GitHub
-git branch -M main
-git push -u origin main
-```
-
-### 方法二：用 GitHub Desktop
-
-1. 下载 [GitHub Desktop](https://desktop.github.com/)
-2. File → Add Local Repository → 选择 `e:\moxingdaima\xiaochengxu`
-3. 填写 Summary → Commit to main
-4. Publish repository → 填写仓库名 → Publish
-
----
-
+-
 ## 📂 项目文件结构
 
 ```
