@@ -1,0 +1,172 @@
+.container {
+  padding: 24rpx;
+  padding-bottom: 120rpx;
+}
+
+/* 头部大图标 */
+.food-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40rpx 0 24rpx;
+}
+
+.hero-icon-wrap {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FFF5F7, #FFE0E6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12rpx;
+}
+
+.hero-icon {
+  font-size: 72rpx;
+}
+
+.custom-tag {
+  background: linear-gradient(135deg, #FFF3E0, #FFE0B2);
+  padding: 6rpx 20rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  color: #E65100;
+}
+
+/* 食物名 */
+.food-name-lg {
+  font-size: 36rpx;
+  font-weight: 700;
+  margin-bottom: 6rpx;
+  text-align: center;
+}
+
+.food-cat {
+  text-align: center;
+  margin-bottom: 20rpx;
+}
+
+/* 大卡数 */
+.cal-big-row {
+  display: flex;
+  justify-content: center;
+  padding: 16rpx 0;
+  border-top: 1rpx solid #F0F0F0;
+  border-bottom: 1rpx solid #F0F0F0;
+  margin-bottom: 20rpx;
+}
+
+.cal-big {
+  text-align: center;
+}
+
+.cal-big-num {
+  font-size: 64rpx;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1;
+}
+
+.cal-big-unit {
+  font-size: 24rpx;
+  color: #999;
+  display: block;
+  margin-top: 4rpx;
+}
+
+/* 营养成分 */
+.nutrition-row {
+  display: flex;
+  gap: 12rpx;
+}
+
+.nutri-box {
+  flex: 1;
+  text-align: center;
+  background: var(--bg);
+  border-radius: 12rpx;
+  padding: 18rpx 8rpx;
+}
+
+.nutri-num {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.nutri-label {
+  font-size: 20rpx;
+  color: #999;
+}
+
+/* 减肥建议 */
+.tips-card {
+  background: linear-gradient(135deg, #FFF8E1, #FFECB3);
+}
+
+.tips-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.tips-item {
+  font-size: 24rpx;
+  color: #795548;
+  line-height: 1.5;
+}
+
+/* 推荐搭配 */
+.meal-plan {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.plan-item {
+  padding: 16rpx;
+  background: var(--bg);
+  border-radius: 12rpx;
+}
+
+.plan-time {
+  display: block;
+  font-size: 26rpx;
+  font-weight: 600;
+  margin-bottom: 6rpx;
+}
+
+.plan-content {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 操作栏 */
+.action-bar {
+  margin-top: 10rpx;
+}
+
+.action-bar .btn-primary {
+  display: block;
+  width: 100%;
+  padding: 24rpx;
+  font-size: 30rpx;
+}
+
+.action-sub {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 16rpx;
+}
+
+.action-sub .btn-outline {
+  flex: 1;
+  text-align: center;
+}
+
+.action-sub .danger {
+  color: var(--danger);
+  border-color: var(--danger);
+}

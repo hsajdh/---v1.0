@@ -1,0 +1,126 @@
+<scroll-view scroll-y class="container">
+
+  <!-- 清真提示 -->
+  <view class="halal-banner">
+    <text class="halal-icon">🕌</text>
+    <text>所有食物均符合<text style="font-weight:700;color:#2E7D32;">清真饮食标准</text>，无猪肉、无酒精</text>
+  </view>
+
+  <!-- 分类标签 -->
+  <scroll-view scroll-x class="category-tabs" enable-flex>
+    <view
+      wx:for="{{categories}}"
+      wx:key="id"
+      class="tab-item {{activeCategory === item.id ? 'active' : ''}}"
+      bindtap="switchCategory"
+      data-id="{{item.id}}"
+    >
+      <text>{{item.icon}} {{item.name}}</text>
+    </view>
+  </scroll-view>
+
+  <!-- 分类说明 -->
+  <view class="category-hint">
+    <text class="text-sm text-light">{{currentCategoryInfo.desc}}</text>
+  </view>
+
+  <!-- 添加按钮 -->
+  <view class="add-bar">
+    <button class="btn-primary add-btn" bindtap="showAddModal">
+      ➕ 添加自定义食物
+    </button>
+  </view>
+
+  <!-- 食物列表 -->
+  <view wx:if="{{filteredFoods.length === 0}}" class="empty-hint">
+    <text>该分类下暂无食物</text>
+    <text class="text-sm text-light mt-1">点击上方按钮添加吧～</text>
+  </view>
+
+  <view
+    wx:for="{{filteredFoods}}"
+    wx:key="id"
+    class="card food-card {{item.isCustom ? 'custom-food' : ''}}"
+    bindtap="goDetail"
+    data-id="{{item.id}}"
+    data-custom="{{item.isCustom}}"
+    bindlongpress="onLongPress"
+    data-item="{{item}}"
+  >
+    <view class="food-row">
+      <view class="food-icon-wrap">
+        <text class="food-icon">{{item.icon}}</text>
+      </view>
+      <view class="food-info">
+        <view class="food-name">
+          {{item.name}}
+          <text wx:if="{{item.isCustom}}" class="custom-badge">自定</text>
+        </view>
+        <view class="food-meta text-sm text-light">
+          <text wx:if="{{item.protein > 0}}">蛋白质 {{item.protein}}g · </text>
+          <text wx:if="{{item.carbs > 0}}">碳水 {{item.carbs}}g · </text>
+          <text wx:if="{{item.fat > 0}}">脂肪 {{item.fat}}g</text>
+          <text wx:if="{{!item.protein && !item.carbs && !item.fat}}">每{{item.unit || '份'}}</text>
+        </view>
+      </view>
+      <view class="food-cal">
+        <text class="cal-val">{{item.calories}}</text>
+        <text class="cal-unit">大卡</text>
+      </view>
+      <view wx:if="{{item.isCustom}}" class="delete-tip text-sm text-light">长按删除</view>
+    </view>
+  </view>
+
+  <view style="height:120rpx;"></view>
+</scroll-view>
+
+<!-- 添加食物弹窗 -->
+<view wx:if="{{showAdd}}" class="modal-mask" bindtap="hideAddModal"></view>
+<view wx:if="{{showAdd}}" class="modal-panel">
+  <view class="modal-header">
+    <text class="modal-title">{{editingFood ? '编辑食物' : '添加自定义食物'}}</text>
+    <text class="modal-close" bindtap="hideAddModal">✕</text>
+  </view>
+  <scroll-view scroll-y class="modal-body">
+    <view class="form-item">
+      <text class="form-label">食物名称 *</text>
+      <input class="form-input" placeholder="如：食堂新出的牛肉沙拉" value="{{formData.name}}" bindinput="onFormName" />
+    </view>
+    <view class="form-item">
+      <text class="form-label">热量（大卡）*</text>
+      <input class="form-input" type="digit" placeholder="如：350" value="{{formData.calories}}" bindinput="onFormCal" />
+    </view>
+    <view class="form-item">
+      <text class="form-label">分类</text>
+      <picker mode="selector" range="{{categoryNames}}" value="{{formData.catIdx}}" bindchange="onFormCat">
+        <view class="form-picker">{{categoryNames[formData.catIdx] || '请选择分类'}}</view>
+      </picker>
+    </view>
+    <view class="form-item">
+      <text class="form-label">单位</text>
+      <input class="form-input" placeholder="如：份、个、碗、杯" value="{{formData.unit}}" bindinput="onFormUnit" />
+    </view>
+    <view class="form-item">
+      <text class="form-label">图标Emoji</text>
+      <input class="form-input" placeholder="如：🥗" value="{{formData.icon}}" bindinput="onFormIcon" />
+    </view>
+    <view class="form-row">
+      <view class="form-item form-half">
+        <text class="form-label">蛋白质(g)</text>
+        <input class="form-input" type="digit" placeholder="0" value="{{formData.protein}}" bindinput="onFormProtein" />
+      </view>
+      <view class="form-item form-half">
+        <text class="form-label">碳水(g)</text>
+        <input class="form-input" type="digit" placeholder="0" value="{{formData.carbs}}" bindinput="onFormCarbs" />
+      </view>
+      <view class="form-item form-half">
+        <text class="form-label">脂肪(g)</text>
+        <input class="form-input" type="digit" placeholder="0" value="{{formData.fat}}" bindinput="onFormFat" />
+      </view>
+    </view>
+  </scroll-view>
+  <view class="modal-footer">
+    <button wx:if="{{editingFood}}" class="btn-outline btn-sm" bindtap="deleteEditingFood">🗑️ 删除</button>
+    <button class="btn-primary" bindtap="saveFood">{{editingFood ? '💾 保存修改' : '✅ 添加食物'}}</button>
+  </view>
+</view>

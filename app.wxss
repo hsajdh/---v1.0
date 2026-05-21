@@ -1,0 +1,185 @@
+page {
+  --primary: #FF6B8A;
+  --primary-light: #FFE0E6;
+  --primary-dark: #E85B7A;
+  --bg: #FFF5F7;
+  --white: #FFFFFF;
+  --text: #333333;
+  --text-light: #999999;
+  --text-lighter: #BBBBBB;
+  --success: #4CD964;
+  --warning: #FFB800;
+  --danger: #FF3B30;
+  --card-shadow: 0 4rpx 20rpx rgba(255, 107, 138, 0.08);
+  --border-radius: 16rpx;
+  --gap: 24rpx;
+
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
+  font-size: 28rpx;
+  color: var(--text);
+  background-color: var(--bg);
+  box-sizing: border-box;
+}
+
+.container {
+  padding: var(--gap);
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* === 通用卡片 === */
+.card {
+  background: var(--white);
+  border-radius: var(--border-radius);
+  padding: 28rpx;
+  margin-bottom: var(--gap);
+  box-shadow: var(--card-shadow);
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-title .icon {
+  font-size: 36rpx;
+  margin-right: 10rpx;
+}
+
+/* === 按钮 === */
+.btn-primary {
+  background: linear-gradient(135deg, #FF6B8A, #FF8E9E);
+  color: #FFFFFF;
+  border-radius: 48rpx;
+  padding: 20rpx 48rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  text-align: center;
+  border: none;
+  display: inline-block;
+  box-shadow: 0 6rpx 20rpx rgba(255, 107, 138, 0.3);
+}
+
+.btn-primary:active {
+  opacity: 0.85;
+  transform: scale(0.97);
+}
+
+.btn-outline {
+  background: var(--white);
+  color: var(--primary);
+  border: 2rpx solid var(--primary);
+  border-radius: 48rpx;
+  padding: 18rpx 48rpx;
+  font-size: 28rpx;
+  text-align: center;
+  display: inline-block;
+}
+
+.btn-sm {
+  padding: 12rpx 32rpx;
+  font-size: 24rpx;
+}
+
+/* === 标签 === */
+.tag {
+  display: inline-block;
+  padding: 6rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 22rpx;
+  margin-right: 10rpx;
+}
+
+.tag-halal {
+  background: #E8F5E9;
+  color: #2E7D32;
+}
+
+.tag-hot {
+  background: #FFF3E0;
+  color: #E65100;
+}
+
+.tag-easy {
+  background: #E3F2FD;
+  color: #1565C0;
+}
+
+.tag-protein {
+  background: #FCE4EC;
+  color: #C62828;
+}
+
+/* === 布局 === */
+.flex-row {
+  display: flex;
+  align-items: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-primary {
+  color: var(--primary);
+}
+
+.text-light {
+  color: var(--text-light);
+}
+
+.text-sm {
+  font-size: 24rpx;
+}
+
+.text-lg {
+  font-size: 36rpx;
+}
+
+.text-xl {
+  font-size: 48rpx;
+  font-weight: 700;
+}
+
+.mt-1 { margin-top: 16rpx; }
+.mt-2 { margin-top: 32rpx; }
+.mb-1 { margin-bottom: 16rpx; }
+.mb-2 { margin-bottom: 32rpx; }
+
+/* === 进度条 === */
+.progress-bar {
+  height: 12rpx;
+  background: #F0F0F0;
+  border-radius: 6rpx;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 6rpx;
+  background: linear-gradient(90deg, #FF6B8A, #FF8E9E);
+  transition: width 0.3s ease;
+}
+
+/* === 分割线 === */
+.divider {
+  height: 1rpx;
+  background: #F0F0F0;
+  margin: 20rpx 0;
+}

@@ -1,0 +1,223 @@
+<scroll-view scroll-y class="container">
+
+  <!-- 用户头像区 -->
+  <view class="profile-header">
+    <view class="avatar-wrap">
+      <image wx:if="{{userInfo.avatar}}" class="avatar" src="{{userInfo.avatar}}" mode="aspectFill" />
+      <view wx:else class="avatar avatar-placeholder" bindtap="chooseAvatar">
+        <text class="avatar-emoji">👧</text>
+      </view>
+    </view>
+    <view class="profile-name">{{userInfo.nickname}}</view>
+    <view class="profile-slogan">在校园里，健康瘦下来 💪</view>
+  </view>
+
+  <!-- 减重数据 -->
+  <view class="card stats-card">
+    <view class="stat-row">
+      <view class="stat-item">
+        <text class="stat-num text-primary">{{lostWeight}}kg</text>
+        <text class="stat-label">已减重</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-num">{{checkinDays}}</text>
+        <text class="stat-label">累计打卡/天</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-num">{{totalPoints}}</text>
+        <text class="stat-label">累计积分</text>
+      </view>
+    </view>
+    <view class="stat-row mt-1">
+      <view class="stat-item">
+        <text class="stat-num">{{bmi}}</text>
+        <text class="stat-label">当前BMI</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-num">{{weightChange7d}}</text>
+        <text class="stat-label">7天变化/kg</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-num">{{remainDays}}</text>
+        <text class="stat-label">预计剩余/天</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 目标设置 -->
+  <view class="card">
+    <view class="card-title">🎯 减重目标设置</view>
+    <view class="setting-item">
+      <text class="setting-label">当前体重 (kg)</text>
+      <input class="setting-input" type="digit" value="{{userInfo.currentWeight}}" bindinput="onFieldChange" data-field="currentWeight" />
+    </view>
+    <view class="setting-item">
+      <text class="setting-label">目标体重 (kg)</text>
+      <input class="setting-input" type="digit" value="{{userInfo.targetWeight}}" bindinput="onFieldChange" data-field="targetWeight" />
+    </view>
+    <view class="setting-item">
+      <text class="setting-label">初始体重 (kg)</text>
+      <input class="setting-input" type="digit" value="{{userInfo.startWeight}}" bindinput="onFieldChange" data-field="startWeight" />
+    </view>
+    <view class="setting-item">
+      <text class="setting-label">身高 (cm)</text>
+      <input class="setting-input" type="digit" value="{{userInfo.height}}" bindinput="onFieldChange" data-field="height" />
+    </view>
+    <view class="setting-item">
+      <text class="setting-label">开始日期</text>
+      <picker mode="date" value="{{userInfo.startDate}}" bindchange="onDateChange">
+        <view class="setting-picker">{{userInfo.startDate}}</view>
+      </picker>
+    </view>
+    <button class="btn-primary full-width mt-1" bindtap="saveSettings">💾 保存设置</button>
+  </view>
+
+  <!-- 数据管理 -->
+  <view class="card">
+    <view class="card-title">📦 数据管理</view>
+    <view class="menu-list">
+
+      <!-- 自定义食物 -->
+      <view class="menu-item" bindtap="manageFoods">
+        <view class="menu-left">
+          <text>🍽️ 我的自定义食物</text>
+          <text class="menu-count">{{customCounts.foods}}个</text>
+        </view>
+        <text class="menu-arrow">→</text>
+      </view>
+
+      <!-- 自定义运动 -->
+      <view class="menu-item" bindtap="toggleExercisePanel">
+        <view class="menu-left">
+          <text>🏃‍♀️ 我的自定义运动</text>
+          <text class="menu-count">{{customCounts.exercises}}个</text>
+        </view>
+        <text class="menu-arrow">{{showExercisePanel ? '▼' : '→'}}</text>
+      </view>
+      <view wx:if="{{showExercisePanel}}" class="manage-panel">
+        <view wx:if="{{customExercises.length === 0}}" class="empty-tip">
+          <text class="text-sm text-light">还没有自定义运动</text>
+        </view>
+        <view wx:for="{{customExercises}}" wx:key="id" class="manage-item">
+          <text>{{item.icon}} {{item.name}} ({{item.calPer30min}}大卡/30min)</text>
+          <text class="delete-btn" bindtap="deleteExercise" data-id="{{item.id}}">✕</text>
+        </view>
+        <view class="panel-actions">
+          <button class="btn-outline btn-sm" bindtap="showAddExercise">+ 添加自定义运动</button>
+        </view>
+      </view>
+
+      <!-- 自定义奖励 -->
+      <view class="menu-item" bindtap="toggleRewardPanel">
+        <view class="menu-left">
+          <text>🎁 我的自定义奖励</text>
+          <text class="menu-count">{{customCounts.rewards}}个</text>
+        </view>
+        <text class="menu-arrow">{{showRewardPanel ? '▼' : '→'}}</text>
+      </view>
+      <view wx:if="{{showRewardPanel}}" class="manage-panel">
+        <view wx:if="{{customRewards.length === 0}}" class="empty-tip">
+          <text class="text-sm text-light">还没有自定义奖励</text>
+        </view>
+        <view wx:for="{{customRewards}}" wx:key="id" class="manage-item">
+          <view class="manage-info">
+            <text>{{item.icon}} {{item.name}}</text>
+            <text class="text-sm text-light">{{item.points}}积分</text>
+          </view>
+          <text class="delete-btn" bindtap="deleteReward" data-id="{{item.id}}">✕</text>
+        </view>
+        <view class="panel-actions">
+          <button class="btn-outline btn-sm" bindtap="showAddReward">+ 添加自定义奖励</button>
+        </view>
+      </view>
+
+    </view>
+  </view>
+
+  <!-- 快捷入口 -->
+  <view class="card">
+    <view class="card-title">🔗 快捷入口</view>
+    <view class="menu-list">
+      <view class="menu-item" bindtap="goRewards">
+        <text>🎁 奖励兑换</text>
+        <text class="menu-arrow">→</text>
+      </view>
+      <view class="menu-item" bindtap="goRecipes">
+        <text>🍽️ 校园食物库</text>
+        <text class="menu-arrow">→</text>
+      </view>
+      <view class="menu-item" bindtap="resetToday">
+        <text>🔄 重置今日数据</text>
+        <text class="menu-arrow">→</text>
+      </view>
+      <view class="menu-item" bindtap="clearAll">
+        <text>🗑️ 清除所有数据</text>
+        <text class="menu-arrow" style="color:var(--danger)">⚠️</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 关于 -->
+  <view class="about-card text-center">
+    <text class="text-sm text-light">💕 Made with Love by 你的回族男朋友</text>
+    <text class="text-sm text-light mt-1">校园减重 · 清真饮食 · 一起变好</text>
+  </view>
+
+  <view style="height:120rpx;"></view>
+</scroll-view>
+
+<!-- 添加运动弹窗 -->
+<view wx:if="{{showAddExModal}}" class="modal-mask" bindtap="closeAddEx"></view>
+<view wx:if="{{showAddExModal}}" class="modal-panel">
+  <view class="modal-header">
+    <text class="modal-title">添加自定义运动</text>
+    <text class="modal-close" bindtap="closeAddEx">✕</text>
+  </view>
+  <view class="modal-body">
+    <view class="form-item">
+      <text class="form-label">运动名称 *</text>
+      <input class="form-input" placeholder="如：操场快走" value="{{exForm.name}}" bindinput="onExName" />
+    </view>
+    <view class="form-item">
+      <text class="form-label">每30分钟消耗（大卡）*</text>
+      <input class="form-input" type="digit" placeholder="如：200" value="{{exForm.cal}}" bindinput="onExCal" />
+    </view>
+    <view class="form-item">
+      <text class="form-label">图标Emoji</text>
+      <input class="form-input" placeholder="如：🏃‍♀️" value="{{exForm.icon}}" bindinput="onExIcon" />
+    </view>
+  </view>
+  <view class="modal-footer">
+    <button class="btn-primary" bindtap="saveExercise">✅ 添加</button>
+  </view>
+</view>
+
+<!-- 添加奖励弹窗 -->
+<view wx:if="{{showAddRwModal}}" class="modal-mask" bindtap="closeAddRw"></view>
+<view wx:if="{{showAddRwModal}}" class="modal-panel">
+  <view class="modal-header">
+    <text class="modal-title">添加自定义奖励</text>
+    <text class="modal-close" bindtap="closeAddRw">✕</text>
+  </view>
+  <view class="modal-body">
+    <view class="form-item">
+      <text class="form-label">奖励名称 *</text>
+      <input class="form-input" placeholder="如：帮忙做PPT" value="{{rwForm.name}}" bindinput="onRwName" />
+    </view>
+    <view class="form-item">
+      <text class="form-label">所需积分 *</text>
+      <input class="form-input" type="digit" placeholder="如：100" value="{{rwForm.points}}" bindinput="onRwPoints" />
+    </view>
+    <view class="form-item">
+      <text class="form-label">描述</text>
+      <input class="form-input" placeholder="如：帮我做一门课的PPT" value="{{rwForm.desc}}" bindinput="onRwDesc" />
+    </view>
+    <view class="form-item">
+      <text class="form-label">图标Emoji</text>
+      <input class="form-input" placeholder="如：🎁" value="{{rwForm.icon}}" bindinput="onRwIcon" />
+    </view>
+  </view>
+  <view class="modal-footer">
+    <button class="btn-primary" bindtap="saveReward">✅ 添加</button>
+  </view>
+</view>

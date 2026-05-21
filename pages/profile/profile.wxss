@@ -1,0 +1,268 @@
+.container {
+  padding: 24rpx;
+  padding-bottom: 120rpx;
+}
+
+/* === 头像区域 === */
+.profile-header {
+  text-align: center;
+  padding: 40rpx 0 30rpx;
+  margin-bottom: 24rpx;
+}
+
+.avatar-wrap {
+  margin: 0 auto 16rpx;
+}
+
+.avatar {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  box-shadow: 0 8rpx 30rpx rgba(255, 107, 138, 0.2);
+}
+
+.avatar-placeholder {
+  background: linear-gradient(135deg, #FF6B8A, #FFB3C1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-emoji {
+  font-size: 72rpx;
+}
+
+.profile-name {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.profile-slogan {
+  font-size: 24rpx;
+  color: var(--text-light);
+  margin-top: 8rpx;
+}
+
+/* === 数据统计 === */
+.stats-card {
+  margin-bottom: 24rpx;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+}
+
+.stat-item {
+  flex: 1;
+}
+
+.stat-num {
+  font-size: 36rpx;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 4rpx;
+}
+
+.stat-label {
+  font-size: 22rpx;
+  color: #999;
+}
+
+/* === 设置项 === */
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #F5F5F5;
+}
+
+.setting-item:last-of-type {
+  border-bottom: none;
+}
+
+.setting-label {
+  font-size: 28rpx;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.setting-input {
+  text-align: right;
+  font-size: 28rpx;
+  color: var(--primary);
+  font-weight: 600;
+  width: 200rpx;
+  padding: 8rpx;
+}
+
+.setting-picker {
+  font-size: 28rpx;
+  color: var(--primary);
+  font-weight: 600;
+  padding: 8rpx;
+}
+
+/* === 菜单 === */
+.menu-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #F5F5F5;
+  font-size: 28rpx;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-arrow {
+  font-size: 28rpx;
+  color: #CCC;
+}
+
+/* === 菜单扩展 === */
+.menu-left {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.menu-count {
+  font-size: 22rpx;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 2rpx 12rpx;
+  border-radius: 20rpx;
+}
+
+/* === 管理面板 === */
+.manage-panel {
+  padding: 16rpx 0 16rpx 16rpx;
+  border-bottom: 1rpx solid #F5F5F5;
+}
+
+.manage-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14rpx 0;
+  font-size: 26rpx;
+}
+
+.manage-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.delete-btn {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  background: #FFEBEE;
+  color: var(--danger);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  flex-shrink: 0;
+}
+
+.panel-actions {
+  padding-top: 14rpx;
+}
+
+.empty-tip {
+  padding: 16rpx 0;
+}
+
+/* === 弹窗 === */
+.modal-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 100;
+}
+
+.modal-panel {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: #FFF;
+  border-radius: 32rpx 32rpx 0 0;
+  z-index: 101;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 32rpx;
+  border-bottom: 1rpx solid #F0F0F0;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.modal-close {
+  font-size: 36rpx;
+  color: #999;
+  padding: 8rpx;
+}
+
+.modal-body {
+  padding: 24rpx 32rpx;
+  flex: 1;
+}
+
+.form-item {
+  margin-bottom: 22rpx;
+}
+
+.form-label {
+  display: block;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 10rpx;
+}
+
+.form-input {
+  background: var(--bg);
+  border-radius: 12rpx;
+  padding: 18rpx 20rpx;
+  font-size: 28rpx;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.modal-footer {
+  padding: 20rpx 32rpx 40rpx;
+  border-top: 1rpx solid #F0F0F0;
+}
+
+.modal-footer .btn-primary {
+  width: 100%;
+  padding: 22rpx;
+  font-size: 28rpx;
+  border-radius: 48rpx;
+}
+
+/* === 关于 === */
+.about-card {
+  padding: 40rpx 0;
+}

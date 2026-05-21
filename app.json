@@ -1,0 +1,42 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/recipes/recipes",
+    "pages/recipe-detail/recipe-detail",
+    "pages/rewards/rewards",
+    "pages/checkin/checkin",
+    "pages/profile/profile"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#FF6B8A",
+    "navigationBarTitleText": "爱心减重计划",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#FFF5F7"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#FF6B8A",
+    "borderStyle": "white",
+    "backgroundColor": "#FFFFFF",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "🏠 首页"
+      },
+      {
+        "pagePath": "pages/recipes/recipes",
+        "text": "🍽️ 食谱"
+      },
+      {
+        "pagePath": "pages/checkin/checkin",
+        "text": "✅ 打卡"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "👤 我的"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json"
+}

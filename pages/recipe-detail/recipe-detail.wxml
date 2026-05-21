@@ -1,0 +1,94 @@
+<scroll-view scroll-y class="container">
+  <view wx:if="{{food}}" class="detail-wrap">
+
+    <!-- 头部大图标 -->
+    <view class="food-hero">
+      <view class="hero-icon-wrap">
+        <text class="hero-icon">{{food.icon}}</text>
+      </view>
+      <view wx:if="{{food.isCustom}}" class="custom-tag">
+        <text>⭐ 自定义食物</text>
+      </view>
+    </view>
+
+    <!-- 基本信息 -->
+    <view class="card">
+      <view class="food-name-lg">{{food.name}}</view>
+      <view class="food-cat text-sm text-light">{{categoryName}}</view>
+
+      <view class="cal-big-row">
+        <view class="cal-big">
+          <text class="cal-big-num">{{food.calories}}</text>
+          <text class="cal-big-unit">大卡 / {{food.unit || '份'}}</text>
+        </view>
+      </view>
+
+      <view class="nutrition-row">
+        <view class="nutri-box">
+          <text class="nutri-num">{{food.protein || 0}}g</text>
+          <text class="nutri-label">蛋白质</text>
+        </view>
+        <view class="nutri-box">
+          <text class="nutri-num">{{food.carbs || 0}}g</text>
+          <text class="nutri-label">碳水化合物</text>
+        </view>
+        <view class="nutri-box">
+          <text class="nutri-num">{{food.fat || 0}}g</text>
+          <text class="nutri-label">脂肪</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 减肥建议 -->
+    <view class="card tips-card">
+      <view class="card-title">💡 减肥饮食建议</view>
+      <view class="tips-list">
+        <text class="tips-item">✅ 细嚼慢咽，每口嚼20下以上</text>
+        <text class="tips-item">✅ 先吃蔬菜，再吃蛋白质，最后吃主食</text>
+        <text class="tips-item">✅ 吃到七分饱就停，不要撑</text>
+        <text class="tips-item">✅ 每天喝水2L以上，饭前一杯水</text>
+        <text class="tips-item">⚠️ 避开油炸、糖醋、红烧等高油高糖做法</text>
+        <text class="tips-item">⚠️ 食堂打菜可以要求"少油少汁"</text>
+      </view>
+    </view>
+
+    <!-- 今日推荐搭配 -->
+    <view class="card">
+      <view class="card-title">📋 今日推荐搭配（约1200大卡）</view>
+      <view class="meal-plan">
+        <view class="plan-item">
+          <text class="plan-time">🌅 早餐 300大卡</text>
+          <text class="plan-content">全麦面包2片 + 水煮蛋1个 + 纯牛奶1盒</text>
+        </view>
+        <view class="plan-item">
+          <text class="plan-time">☀️ 午餐 450大卡</text>
+          <text class="plan-content">食堂减脂餐（一荤两素）+ 糙米饭1两</text>
+        </view>
+        <view class="plan-item">
+          <text class="plan-time">🌙 晚餐 300大卡</text>
+          <text class="plan-content">红薯1个 + 即食鸡胸肉100g + 圣女果</text>
+        </view>
+        <view class="plan-item">
+          <text class="plan-time">🍎 加餐 150大卡</text>
+          <text class="plan-content">苹果1个 + 无糖酸奶1杯</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="action-bar">
+      <button class="btn-primary full-width" bindtap="recordCalories">
+        📝 我吃了这个（+{{food.calories}}大卡）
+      </button>
+      <view wx:if="{{food.isCustom}}" class="action-sub">
+        <button class="btn-outline btn-sm" bindtap="editFood">✏️ 编辑</button>
+        <button class="btn-outline btn-sm danger" bindtap="deleteFood">🗑️ 删除</button>
+      </view>
+    </view>
+  </view>
+
+  <view wx:else class="empty-hint">
+    <text>食物数据加载中...</text>
+  </view>
+  <view style="height:40rpx;"></view>
+</scroll-view>
