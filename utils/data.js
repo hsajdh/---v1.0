@@ -143,10 +143,38 @@ const defaultPunishments = [
 ];
 
 // ==================== 数据管理函数 ====================
+// 房间版数据优先写入当前房间；没有进入房间时保留旧版本地缓存兼容。
 
-/** 获取所有食物（默认+自定义） */
+function getActiveApp() {
+  try {
+    return getApp();
+  } catch (e) {
+    return null;
+  }
+}
+
+function getRoomList(field, legacyKey) {
+  const app = getActiveApp();
+  const room = app && app.globalData && app.globalData.roomData;
+  if (room) return room[field] || [];
+  return wx.getStorageSync(legacyKey) || [];
+}
+
+function setRoomList(field, legacyKey, list) {
+  const app = getActiveApp();
+  const room = app && app.globalData && app.globalData.roomData;
+  if (room) {
+    room[field] = list;
+    app.saveData();
+    return list;
+  }
+  wx.setStorageSync(legacyKey, list);
+  return list;
+}
+
+/** 获取所有食物（默认+当前房间自定义） */
 function getFoods() {
-  const customFoods = wx.getStorageSync('customFoods') || [];
+  const customFoods = getRoomList('customFoods', 'customFoods');
   return [...defaultFoods, ...customFoods];
 }
 
@@ -157,80 +185,105 @@ function getFoodCategories() {
 
 /** 添加自定义食物 */
 function addCustomFood(food) {
-  const customFoods = wx.getStorageSync('customFoods') || [];
-  food.id = 'cu_' + Date.now();
-  food.isCustom = true;
-  food.category = food.category || 'custom';
-  customFoods.push(food);
-  wx.setStorageSync('customFoods', customFoods);
-  return food;
+  const customFoods = getRoomList('customFoods', 'customFoods');
+  const item = {
+    ...food,
+    id: 'cu_' + Date.now(),
+    isCustom: true,
+    category: food.category || 'custom'
+  };
+  customFoods.push(item);
+  setRoomList('customFoods', 'customFoods', customFoods);
+  return item;
 }
 
 /** 删除自定义食物 */
 function deleteCustomFood(foodId) {
-  let customFoods = wx.getStorageSync('customFoods') || [];
-  customFoods = customFoods.filter(f => f.id !== foodId);
-  wx.setStorageSync('customFoods', customFoods);
-  return customFoods;
+  const customFoods = getRoomList('customFoods', 'customFoods').filter(f => f.id !== foodId);
+  return setRoomList('customFoods', 'customFoods', customFoods);
 }
 
 /** 更新自定义食物 */
 function updateCustomFood(foodId, updates) {
-  let customFoods = wx.getStorageSync('customFoods') || [];
+  const customFoods = getRoomList('customFoods', 'customFoods');
   const idx = customFoods.findIndex(f => f.id === foodId);
   if (idx > -1) {
     customFoods[idx] = { ...customFoods[idx], ...updates };
-    wx.setStorageSync('customFoods', customFoods);
+    setRoomList('customFoods', 'customFoods', customFoods);
   }
   return customFoods;
 }
 
-/** 获取所有运动（默认+自定义） */
+/** 获取所有运动（默认+当前房间自定义） */
 function getExercises() {
-  const customExercises = wx.getStorageSync('customExercises') || [];
+  const customExercises = getRoomList('customExercises', 'customExercises');
   return [...defaultExercises, ...customExercises];
 }
 
 /** 添加自定义运动 */
 function addCustomExercise(exercise) {
-  const customExercises = wx.getStorageSync('customExercises') || [];
-  exercise.id = 'ex_cu_' + Date.now();
-  exercise.isCustom = true;
-  customExercises.push(exercise);
-  wx.setStorageSync('customExercises', customExercises);
-  return exercise;
+  const customExercises = getRoomList('customExercises', 'customExercises');
+  const item = {
+    ...exercise,
+    id: 'ex_cu_' + Date.now(),
+    isCustom: true
+  };
+  customExercises.push(item);
+  setRoomList('customExercises', 'customExercises', customExercises);
+  return item;
+}
+
+/** 更新自定义运动 */
+function updateCustomExercise(exerciseId, updates) {
+  const customExercises = getRoomList('customExercises', 'customExercises');
+  const idx = customExercises.findIndex(e => e.id === exerciseId);
+  if (idx > -1) {
+    customExercises[idx] = { ...customExercises[idx], ...updates };
+    setRoomList('customExercises', 'customExercises', customExercises);
+  }
+  return customExercises;
 }
 
 /** 删除自定义运动 */
 function deleteCustomExercise(exerciseId) {
-  let customExercises = wx.getStorageSync('customExercises') || [];
-  customExercises = customExercises.filter(e => e.id !== exerciseId);
-  wx.setStorageSync('customExercises', customExercises);
-  return customExercises;
+  const customExercises = getRoomList('customExercises', 'customExercises').filter(e => e.id !== exerciseId);
+  return setRoomList('customExercises', 'customExercises', customExercises);
 }
 
-/** 获取所有奖励（默认+自定义） */
+/** 获取所有奖励（默认+当前房间自定义） */
 function getRewards() {
-  const customRewards = wx.getStorageSync('customRewards') || [];
+  const customRewards = getRoomList('customRewards', 'customRewards');
   return [...defaultRewards, ...customRewards];
 }
 
 /** 添加自定义奖励 */
 function addCustomReward(reward) {
-  const customRewards = wx.getStorageSync('customRewards') || [];
-  reward.id = 'r_cu_' + Date.now();
-  reward.isCustom = true;
-  customRewards.push(reward);
-  wx.setStorageSync('customRewards', customRewards);
-  return reward;
+  const customRewards = getRoomList('customRewards', 'customRewards');
+  const item = {
+    ...reward,
+    id: 'r_cu_' + Date.now(),
+    isCustom: true
+  };
+  customRewards.push(item);
+  setRoomList('customRewards', 'customRewards', customRewards);
+  return item;
+}
+
+/** 更新自定义奖励 */
+function updateCustomReward(rewardId, updates) {
+  const customRewards = getRoomList('customRewards', 'customRewards');
+  const idx = customRewards.findIndex(r => r.id === rewardId);
+  if (idx > -1) {
+    customRewards[idx] = { ...customRewards[idx], ...updates };
+    setRoomList('customRewards', 'customRewards', customRewards);
+  }
+  return customRewards;
 }
 
 /** 删除自定义奖励 */
 function deleteCustomReward(rewardId) {
-  let customRewards = wx.getStorageSync('customRewards') || [];
-  customRewards = customRewards.filter(r => r.id !== rewardId);
-  wx.setStorageSync('customRewards', customRewards);
-  return customRewards;
+  const customRewards = getRoomList('customRewards', 'customRewards').filter(r => r.id !== rewardId);
+  return setRoomList('customRewards', 'customRewards', customRewards);
 }
 
 module.exports = {
@@ -244,10 +297,12 @@ module.exports = {
   defaultExercises,
   getExercises,
   addCustomExercise,
+  updateCustomExercise,
   deleteCustomExercise,
   defaultRewards,
   getRewards,
   addCustomReward,
+  updateCustomReward,
   deleteCustomReward,
   defaultPunishments
 };

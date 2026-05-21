@@ -1,0 +1,64 @@
+<scroll-view scroll-y class="room-page">
+  <view class="room-hero">
+    <view class="room-heart">💕</view>
+    <view class="room-title">专属变美房间</view>
+    <view class="room-subtitle">输入同一个房间号和统一密码，两个人就能进入同一个计划空间</view>
+  </view>
+
+  <view class="room-card">
+    <view class="form-item">
+      <text class="form-label">房间号</text>
+      <input
+        class="room-input"
+        placeholder="例如 love520"
+        value="{{roomId}}"
+        bindinput="onRoomInput"
+      />
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">统一密码</text>
+      <input
+        class="room-input"
+        password
+        placeholder="两个人输入同一个密码"
+        value="{{password}}"
+        bindinput="onPasswordInput"
+      />
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">选择身份</text>
+      <view class="role-grid">
+        <view
+          class="role-card {{role === 'supervisor' ? 'active' : ''}}"
+          bindtap="selectRole"
+          data-role="supervisor"
+        >
+          <view class="role-icon">🛡️</view>
+          <view class="role-name">监督者</view>
+          <view class="role-desc">管理食谱、奖励、活动和积分，查看打卡记录</view>
+        </view>
+        <view
+          class="role-card {{role === 'beauty' ? 'active' : ''}}"
+          bindtap="selectRole"
+          data-role="beauty"
+        >
+          <view class="role-icon">✨</view>
+          <view class="role-name">变美者</view>
+          <view class="role-desc">每日打卡、记录饮食运动，向监督者提交愿望申请</view>
+        </view>
+      </view>
+    </view>
+
+    <button class="btn-primary full-width" bindtap="joinRoom">进入房间</button>
+    <button wx:if="{{lastSession}}" class="btn-outline full-width mt-1" bindtap="continueLastRoom">
+      继续进入 {{lastSession.roomId}}
+    </button>
+  </view>
+
+  <view class="room-note">
+    <view>第一次进入会自动创建房间。</view>
+    <view>同一房间内会保留独立的打卡、积分、申请和自定义内容。</view>
+  </view>
+</scroll-view>

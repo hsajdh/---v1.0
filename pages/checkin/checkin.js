@@ -4,6 +4,7 @@ const app = getApp();
 
 Page({
   data: {
+    role: 'beauty',
     streak: 0,
     weekLabels: ['日', '一', '二', '三', '四', '五', '六'],
     calendarDays: [],
@@ -18,12 +19,15 @@ Page({
   },
 
   onShow() {
+    if (!app.ensureRoom()) return;
     const td = app.globalData.todayData;
     this.setData({
+      role: app.globalData.currentRole,
       todayChecked: td.checkedIn,
       weightInput: td.weight || '',
       selectedExercises: (td.exercises || []).map(e => e.id),
       todayWater: td.waterCount,
+      exercises: getExercises(),
       history: (app.globalData.history || []).slice(0, 14)
     });
     this.buildCalendar();
@@ -146,6 +150,11 @@ Page({
   },
 
   submitCheckin() {
+    if (this.data.role === 'supervisor') {
+      wx.showToast({ title: '监督者只能查看打卡记录', icon: 'none' });
+      return;
+    }
+
     const { weightInput, selectedExercises } = this.data;
     const weight = parseFloat(weightInput);
 
@@ -157,6 +166,8 @@ Page({
     const td = app.globalData.todayData;
     td.weight = weight;
     td.checkedIn = true;
+    td.photoTaken = !!this.data.photoPath;
+    td.photoPath = this.data.photoPath || '';
 
     // 更新当前体重
     app.globalData.userInfo.currentWeight = weight;
@@ -181,18 +192,30 @@ Page({
     if (exList.length > 0) pointsEarned += exList.length * 10;
     if (weightInput && parseFloat(weightInput) < app.globalData.userInfo.startWeight) pointsEarned += 5;
 
+    const todayStr = util.getToday();
     app.globalData.totalPoints += pointsEarned;
     app.globalData.checkinDays++;
+    if (app.globalData.roomData) {
+      app.globalData.roomData.pointLogs = app.globalData.roomData.pointLogs || [];
+      app.globalData.roomData.pointLogs.unshift({
+        id: 'plog_' + Date.now(),
+        date: todayStr,
+        amount: pointsEarned,
+        reason: '每日打卡奖励',
+        operator: '系统'
+      });
+    }
 
     // 保存到历史
     const history = app.globalData.history || [];
-    const todayStr = util.getToday();
     const existingIdx = history.findIndex(h => h.date === todayStr);
     const record = {
       date: todayStr,
       weight: weight,
       exercises: exList,
       water: td.waterCount,
+      photoTaken: td.photoTaken,
+      photoPath: td.photoPath,
       pointsEarned: pointsEarned
     };
     if (existingIdx > -1) {

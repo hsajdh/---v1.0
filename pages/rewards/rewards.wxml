@@ -7,8 +7,14 @@
       <text class="points-label">当前积分</text>
     </view>
     <view class="points-desc">
-      <text>每天打卡、运动、健康饮食</text>
-      <text>都能获得积分哦～ 💪</text>
+      <block wx:if="{{role !== 'supervisor'}}">
+        <text>每天打卡、运动、健康饮食</text>
+        <text>都能获得积分哦～ 💪</text>
+      </block>
+      <block wx:else>
+        <text>监督者查看奖励池</text>
+        <text>编辑奖励请去“我的”管理台</text>
+      </block>
     </view>
   </view>
 
@@ -49,7 +55,7 @@
     <view
       wx:for="{{rewards}}"
       wx:key="id"
-      class="card reward-card {{totalPoints >= item.points ? 'available' : 'locked'}}"
+      class="card reward-card {{role === 'supervisor' || totalPoints >= item.points ? 'available' : 'locked'}}"
       bindtap="redeemReward"
       data-item="{{item}}"
     >
@@ -60,9 +66,13 @@
         <text class="cost-num">{{item.points}}</text>
         <text class="cost-label">积分</text>
       </view>
-      <view wx:if="{{totalPoints < item.points}}" class="lock-overlay">
+      <view wx:if="{{role !== 'supervisor' && totalPoints < item.points}}" class="lock-overlay">
         <text class="lock-icon">🔒</text>
         <text>还差{{item.points - totalPoints}}分</text>
+      </view>
+      <view wx:if="{{role === 'supervisor'}}" class="lock-overlay supervisor-overlay">
+        <text class="lock-icon">🛡️</text>
+        <text>监督者查看</text>
       </view>
     </view>
   </view>

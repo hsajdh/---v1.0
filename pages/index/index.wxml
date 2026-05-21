@@ -1,158 +1,233 @@
 <scroll-view scroll-y class="container">
 
-  <!-- 甜蜜问候 -->
-  <view class="hero-banner">
-    <view class="hero-hearts">💕💖💕</view>
-    <view class="hero-msg">{{encourageMsg}}</view>
-    <view class="hero-from">—— 爱你的男朋友</view>
-  </view>
-
-  <!-- 减肥进度概览 -->
-  <view class="card progress-card">
-    <view class="card-title">
-      <text>📊 减重进度</text>
-      <text class="text-sm text-light">{{lostWeight}}kg / {{totalTarget}}kg</text>
+  <block wx:if="{{role === 'supervisor'}}">
+    <view class="hero-banner supervisor-hero">
+      <view class="hero-hearts">🛡️💕</view>
+      <view class="hero-msg">监督者管理台</view>
+      <view class="hero-from">房间 {{currentRoomId}} · 管理她的变美计划</view>
     </view>
-    <view class="progress-circle-row">
-      <view class="progress-circle">
-        <view class="circle-percent">{{progressPercent}}%</view>
-        <view class="circle-label">已完成</view>
+
+    <view class="card-grid">
+      <view class="card data-card">
+        <view class="data-icon">⚖️</view>
+        <view class="data-num">{{userInfo.currentWeight}}</view>
+        <view class="data-label">当前体重/kg</view>
       </view>
-      <view class="progress-detail">
-        <view class="detail-item">
-          <text class="detail-val">{{userInfo.startWeight}}</text>
-          <text class="detail-label">初始体重</text>
+      <view class="card data-card">
+        <view class="data-icon">⭐</view>
+        <view class="data-num">{{totalPoints}}</view>
+        <view class="data-label">当前积分</view>
+      </view>
+      <view class="card data-card">
+        <view class="data-icon">✅</view>
+        <view class="data-num">{{checkinDays}}</view>
+        <view class="data-label">累计打卡/天</view>
+      </view>
+      <view class="card data-card">
+        <view class="data-icon">📮</view>
+        <view class="data-num">{{pendingApplications}}</view>
+        <view class="data-label">待处理申请</view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">
+        <text>📜 最新打卡记录</text>
+        <text class="text-sm text-primary" bindtap="goCheckin">查看全部 →</text>
+      </view>
+      <view wx:if="{{recentHistory.length === 0}}" class="empty-hint">
+        <text>她还没有提交打卡记录</text>
+      </view>
+      <view wx:for="{{recentHistory}}" wx:key="date" class="admin-record">
+        <view class="flex-between">
+          <text class="history-date">{{item.date}}</text>
+          <text class="text-primary">{{item.weight}}kg</text>
         </view>
-        <view class="detail-item">
-          <text class="detail-val current">{{userInfo.currentWeight}}</text>
-          <text class="detail-label">当前体重</text>
-        </view>
-        <view class="detail-item">
-          <text class="detail-val target">{{userInfo.targetWeight}}</text>
-          <text class="detail-label">目标体重</text>
+        <view class="text-sm text-light mt-1">
+          喝水 {{item.water}}杯 · 运动 {{item.exercises.length}}项 · 积分 +{{item.pointsEarned}}
         </view>
       </view>
     </view>
-    <view class="progress-bar mt-1">
-      <view class="progress-fill" style="width:{{progressPercent}}%"></view>
-    </view>
-    <view class="bmi-info mt-1">
-      <text class="text-sm text-light">BMI: {{bmi}} ({{bmiDesc}}) | 已坚持 {{checkinDays}} 天</text>
-    </view>
-  </view>
 
-  <!-- 今日数据卡片组 -->
-  <view class="card-grid">
-    <!-- 饮水 -->
-    <view class="card data-card water-card" bindtap="addWater">
-      <view class="data-icon">💧</view>
-      <view class="data-num">{{todayData.waterCount}}/<text class="text-sm">{{todayData.waterTarget}}</text></view>
-      <view class="data-label">今日饮水/杯</view>
-      <view class="water-dots">
-        <view wx:for="{{waterDots}}" wx:key="idx" class="water-dot {{item ? 'filled' : ''}}"></view>
+    <view class="card">
+      <view class="card-title">⚡ 快捷管理</view>
+      <view class="admin-actions">
+        <button class="btn-primary btn-sm" bindtap="goProfile">进入完整管理台</button>
+        <button class="btn-outline btn-sm" bindtap="goRecipes">编辑食谱</button>
+        <button class="btn-outline btn-sm" bindtap="goRewards">查看奖励</button>
       </view>
     </view>
+  </block>
 
-    <!-- 热量摄入 -->
-    <view class="card data-card cal-card">
-      <view class="data-icon">🍽️</view>
-      <view class="data-num">{{todayData.caloriesIn}}</view>
-      <view class="data-label">摄入/目标{{todayData.caloriesTarget}}大卡</view>
-      <view class="progress-bar mini-bar">
-        <view class="progress-fill" style="width:{{calPercent}}%"></view>
+  <block wx:else>
+    <!-- 甜蜜问候 -->
+    <view class="hero-banner">
+      <view class="hero-hearts">💕💖💕</view>
+      <view class="hero-msg">{{encourageMsg}}</view>
+      <view class="hero-from">—— 爱你的监督者</view>
+    </view>
+
+    <!-- 减肥进度概览 -->
+    <view class="card progress-card">
+      <view class="card-title">
+        <text>📊 减重进度</text>
+        <text class="text-sm text-light">{{lostWeight}}kg / {{totalTarget}}kg</text>
       </view>
-    </view>
-
-    <!-- 运动消耗 -->
-    <view class="card data-card ex-card">
-      <view class="data-icon">🔥</view>
-      <view class="data-num">{{todayData.caloriesBurned}}</view>
-      <view class="data-label">运动消耗/大卡</view>
-      <view wx:if="{{todayData.exercises.length > 0}}" class="text-sm text-primary mt-1">
-        {{todayData.exercises.length}}项运动已完成
-      </view>
-    </view>
-
-    <!-- 积分 -->
-    <view class="card data-card point-card" bindtap="goRewards">
-      <view class="data-icon">⭐</view>
-      <view class="data-num">{{totalPoints}}</view>
-      <view class="data-label">累计积分</view>
-      <view class="text-sm text-light mt-1">兑换奖励 →</view>
-    </view>
-  </view>
-
-  <!-- 今日运动记录 -->
-  <view class="card">
-    <view class="card-title">
-      <text>🏃‍♀️ 今日运动</text>
-      <text class="text-sm text-primary" bindtap="goCheckin">+记录</text>
-    </view>
-    <view wx:if="{{todayData.exercises.length === 0}}" class="empty-hint">
-      <text>还没有运动记录～去做一组帕梅拉吧！</text>
-    </view>
-    <view wx:else class="exercise-list">
-      <view wx:for="{{todayData.exercises}}" wx:key="id" class="ex-item">
-        <text class="ex-icon">{{item.icon}}</text>
-        <text class="ex-name">{{item.name}}</text>
-        <text class="ex-cal">-{{item.calBurned}}大卡</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- 本周体重趋势 -->
-  <view class="card">
-    <view class="card-title">
-      <text>📈 本周体重趋势</text>
-      <text class="text-sm text-primary" bindtap="goCheckin">+记录体重</text>
-    </view>
-    <view class="chart-container">
-      <view class="chart-bars">
-        <view wx:for="{{weekWeights}}" wx:key="date" class="chart-bar-wrap">
-          <view class="chart-bar {{item.isToday ? 'today' : ''}}" style="height:{{item.height}}rpx">
-            <text wx:if="{{item.weight}}" class="bar-val">{{item.weight}}</text>
+      <view class="progress-circle-row">
+        <view class="progress-circle">
+          <view class="circle-percent">{{progressPercent}}%</view>
+          <view class="circle-label">已完成</view>
+        </view>
+        <view class="progress-detail">
+          <view class="detail-item">
+            <text class="detail-val">{{userInfo.startWeight}}</text>
+            <text class="detail-label">初始体重</text>
           </view>
-          <text class="bar-date">{{item.dayLabel}}</text>
+          <view class="detail-item">
+            <text class="detail-val current">{{userInfo.currentWeight}}</text>
+            <text class="detail-label">当前体重</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-val target">{{userInfo.targetWeight}}</text>
+            <text class="detail-label">目标体重</text>
+          </view>
+        </view>
+      </view>
+      <view class="progress-bar mt-1">
+        <view class="progress-fill" style="width:{{progressPercent}}%"></view>
+      </view>
+      <view class="bmi-info mt-1">
+        <text class="text-sm text-light">BMI: {{bmi}} ({{bmiDesc}}) | 已坚持 {{checkinDays}} 天</text>
+      </view>
+    </view>
+
+    <!-- 今日数据卡片组 -->
+    <view class="card-grid">
+      <view class="card data-card water-card" bindtap="addWater">
+        <view class="data-icon">💧</view>
+        <view class="data-num">{{todayData.waterCount}}/<text class="text-sm">{{todayData.waterTarget}}</text></view>
+        <view class="data-label">今日饮水/杯</view>
+        <view class="water-dots">
+          <view wx:for="{{waterDots}}" wx:key="idx" class="water-dot {{item ? 'filled' : ''}}"></view>
+        </view>
+      </view>
+
+      <view class="card data-card cal-card">
+        <view class="data-icon">🍽️</view>
+        <view class="data-num">{{todayData.caloriesIn}}</view>
+        <view class="data-label">摄入/目标{{todayData.caloriesTarget}}大卡</view>
+        <view class="progress-bar mini-bar">
+          <view class="progress-fill" style="width:{{calPercent}}%"></view>
+        </view>
+      </view>
+
+      <view class="card data-card ex-card">
+        <view class="data-icon">🔥</view>
+        <view class="data-num">{{todayData.caloriesBurned}}</view>
+        <view class="data-label">运动消耗/大卡</view>
+        <view wx:if="{{todayData.exercises.length > 0}}" class="text-sm text-primary mt-1">
+          {{todayData.exercises.length}}项运动已完成
+        </view>
+      </view>
+
+      <view class="card data-card point-card" bindtap="goRewards">
+        <view class="data-icon">⭐</view>
+        <view class="data-num">{{totalPoints}}</view>
+        <view class="data-label">累计积分</view>
+        <view class="text-sm text-light mt-1">兑换奖励 →</view>
+      </view>
+    </view>
+
+    <!-- 今日活动 -->
+    <view class="card">
+      <view class="card-title">
+        <text>🌟 今日活动挑战</text>
+        <text class="text-sm text-primary" bindtap="goProfile">想要新活动 →</text>
+      </view>
+      <view wx:if="{{activities.length === 0}}" class="empty-hint">
+        <text>监督者还没有开启活动</text>
+      </view>
+      <view wx:for="{{activities}}" wx:key="id" class="activity-item" bindtap="completeActivity" data-item="{{item}}">
+        <view class="activity-icon">{{item.icon}}</view>
+        <view class="activity-info">
+          <view class="activity-name">{{item.name}}</view>
+          <view class="text-sm text-light">{{item.desc}}</view>
+        </view>
+        <view class="activity-points">+{{item.points}}</view>
+      </view>
+    </view>
+
+    <!-- 今日运动记录 -->
+    <view class="card">
+      <view class="card-title">
+        <text>🏃‍♀️ 今日运动</text>
+        <text class="text-sm text-primary" bindtap="goCheckin">+记录</text>
+      </view>
+      <view wx:if="{{todayData.exercises.length === 0}}" class="empty-hint">
+        <text>还没有运动记录～去做一组帕梅拉吧！</text>
+      </view>
+      <view wx:else class="exercise-list">
+        <view wx:for="{{todayData.exercises}}" wx:key="id" class="ex-item">
+          <text class="ex-icon">{{item.icon}}</text>
+          <text class="ex-name">{{item.name}}</text>
+          <text class="ex-cal">-{{item.calBurned}}大卡</text>
         </view>
       </view>
     </view>
-  </view>
 
-  <!-- 今日饮食摘要 -->
-  <view class="card">
-    <view class="card-title">
-      <text>🥗 今日饮食</text>
-      <text class="text-sm text-primary" bindtap="goRecipes">食物库 →</text>
-    </view>
-    <view class="meal-timeline">
-      <view class="meal-item">
-        <view class="meal-time">🌅 早餐</view>
-        <view class="meal-suggest">全麦面包2片 + 水煮蛋1个 + 牛奶</view>
-        <view class="meal-cal">≈ 350大卡</view>
+    <!-- 本周体重趋势 -->
+    <view class="card">
+      <view class="card-title">
+        <text>📈 本周体重趋势</text>
+        <text class="text-sm text-primary" bindtap="goCheckin">+记录体重</text>
       </view>
-      <view class="meal-item">
-        <view class="meal-time">☀️ 午餐</view>
-        <view class="meal-suggest">食堂减脂餐（一荤两素）+ 糙米饭</view>
-        <view class="meal-cal">≈ 500大卡</view>
-      </view>
-      <view class="meal-item">
-        <view class="meal-time">🌙 晚餐</view>
-        <view class="meal-suggest">烤红薯1个 + 即食鸡胸肉 + 圣女果</view>
-        <view class="meal-cal">≈ 350大卡</view>
-      </view>
-      <view class="meal-item">
-        <view class="meal-time">🍎 加餐</view>
-        <view class="meal-suggest">苹果1个 / 无糖酸奶1杯</view>
-        <view class="meal-cal">≈ 100大卡</view>
+      <view class="chart-container">
+        <view class="chart-bars">
+          <view wx:for="{{weekWeights}}" wx:key="date" class="chart-bar-wrap">
+            <view class="chart-bar {{item.isToday ? 'today' : ''}}" style="height:{{item.height}}rpx">
+              <text wx:if="{{item.weight}}" class="bar-val">{{item.weight}}</text>
+            </view>
+            <text class="bar-date">{{item.dayLabel}}</text>
+          </view>
+        </view>
       </view>
     </view>
-    <view class="divider"></view>
-    <view class="flex-between">
-      <text class="text-sm">今日推荐总摄入</text>
-      <text class="text-primary" style="font-weight:700">≈ 1300 大卡</text>
-    </view>
-  </view>
 
-  <!-- 底部留白 -->
+    <!-- 今日饮食摘要 -->
+    <view class="card">
+      <view class="card-title">
+        <text>🥗 今日饮食</text>
+        <text class="text-sm text-primary" bindtap="goRecipes">食物库 →</text>
+      </view>
+      <view class="meal-timeline">
+        <view class="meal-item">
+          <view class="meal-time">🌅 早餐</view>
+          <view class="meal-suggest">全麦面包2片 + 水煮蛋1个 + 牛奶</view>
+          <view class="meal-cal">≈ 350大卡</view>
+        </view>
+        <view class="meal-item">
+          <view class="meal-time">☀️ 午餐</view>
+          <view class="meal-suggest">食堂减脂餐（一荤两素）+ 糙米饭</view>
+          <view class="meal-cal">≈ 500大卡</view>
+        </view>
+        <view class="meal-item">
+          <view class="meal-time">🌙 晚餐</view>
+          <view class="meal-suggest">烤红薯1个 + 即食鸡胸肉 + 圣女果</view>
+          <view class="meal-cal">≈ 350大卡</view>
+        </view>
+        <view class="meal-item">
+          <view class="meal-time">🍎 加餐</view>
+          <view class="meal-suggest">苹果1个 / 无糖酸奶1杯</view>
+          <view class="meal-cal">≈ 100大卡</view>
+        </view>
+      </view>
+      <view class="divider"></view>
+      <view class="flex-between">
+        <text class="text-sm">今日推荐总摄入</text>
+        <text class="text-primary" style="font-weight:700">≈ 1300 大卡</text>
+      </view>
+    </view>
+  </block>
+
   <view style="height:40rpx;"></view>
 </scroll-view>

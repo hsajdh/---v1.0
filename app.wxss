@@ -157,6 +157,11 @@ page {
   font-weight: 700;
 }
 
+.full-width {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .mt-1 { margin-top: 16rpx; }
 .mt-2 { margin-top: 32rpx; }
 .mb-1 { margin-bottom: 16rpx; }

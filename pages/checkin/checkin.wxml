@@ -20,93 +20,95 @@
     </view>
   </view>
 
-  <!-- 今日已打卡状态 -->
-  <view wx:if="{{todayChecked}}" class="checked-banner">
-    <text class="checked-icon">🎉</text>
-    <text>今日已完成打卡，太棒啦！</text>
+  <view wx:if="{{role === 'supervisor'}}" class="checked-banner supervisor-banner">
+    <text class="checked-icon">🛡️</text>
+    <text>监督者查看模式：这里会展示变美者所有打卡记录</text>
   </view>
 
-  <!-- 打卡表单 -->
-  <view wx:if="{{!todayChecked}}" class="card">
-    <view class="card-title">✍️ 今日打卡</view>
-
-    <!-- 体重记录 -->
-    <view class="checkin-field">
-      <view class="field-label">
-        <text class="field-icon">⚖️</text>
-        <text>今日体重 (kg)</text>
-      </view>
-      <view class="field-input-wrap">
-        <input
-          class="field-input"
-          type="digit"
-          placeholder="输入今日体重"
-          value="{{weightInput}}"
-          bindinput="onWeightInput"
-        />
-        <text class="field-unit">kg</text>
-      </view>
+  <block wx:if="{{role !== 'supervisor'}}">
+    <!-- 今日已打卡状态 -->
+    <view wx:if="{{todayChecked}}" class="checked-banner">
+      <text class="checked-icon">🎉</text>
+      <text>今日已完成打卡，太棒啦！</text>
     </view>
 
-    <!-- 运动记录 -->
-    <view class="checkin-field">
-      <view class="field-label">
-        <text class="field-icon">🏃‍♀️</text>
-        <text>今日运动</text>
+    <!-- 打卡表单 -->
+    <view wx:if="{{!todayChecked}}" class="card">
+      <view class="card-title">✍️ 今日打卡</view>
+
+      <view class="checkin-field">
+        <view class="field-label">
+          <text class="field-icon">⚖️</text>
+          <text>今日体重 (kg)</text>
+        </view>
+        <view class="field-input-wrap">
+          <input
+            class="field-input"
+            type="digit"
+            placeholder="输入今日体重"
+            value="{{weightInput}}"
+            bindinput="onWeightInput"
+          />
+          <text class="field-unit">kg</text>
+        </view>
       </view>
-      <view class="exercise-select">
-        <view
-          wx:for="{{exercises}}"
-          wx:key="id"
-          class="ex-option {{selectedExercises.indexOf(item.id) > -1 ? 'selected' : ''}}"
-          bindtap="toggleExercise"
-          data-id="{{item.id}}"
-        >
-          <text>{{item.icon}} {{item.name}}</text>
-          <text class="ex-cal-text">-{{item.calPer30min}}大卡</text>
+
+      <view class="checkin-field">
+        <view class="field-label">
+          <text class="field-icon">🏃‍♀️</text>
+          <text>今日运动</text>
+        </view>
+        <view class="exercise-select">
+          <view
+            wx:for="{{exercises}}"
+            wx:key="id"
+            class="ex-option {{selectedExercises.indexOf(item.id) > -1 ? 'selected' : ''}}"
+            bindtap="toggleExercise"
+            data-id="{{item.id}}"
+          >
+            <text>{{item.icon}} {{item.name}}</text>
+            <text class="ex-cal-text">-{{item.calPer30min}}大卡</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="checkin-field">
+        <view class="field-label">
+          <text class="field-icon">💧</text>
+          <text>今日饮水快速打卡</text>
+        </view>
+        <view class="water-quick-set">
+          <button
+            wx:for="{{waterQuickBtns}}"
+            wx:key="*this"
+            class="water-qbtn {{todayWater >= item ? 'done' : ''}}"
+            bindtap="setWater"
+            data-count="{{item}}"
+          >{{item}}杯</button>
+        </view>
+      </view>
+
+      <view class="checkin-field">
+        <view class="field-label">
+          <text class="field-icon">📸</text>
+          <text>身材记录照（可跳过）</text>
+        </view>
+        <view class="photo-area" bindtap="takePhoto">
+          <view wx:if="{{!photoPath}}" class="photo-placeholder">
+            <text class="photo-plus">+</text>
+            <text>点击拍照</text>
+          </view>
+          <image wx:else class="photo-preview" src="{{photoPath}}" mode="aspectFill" />
         </view>
       </view>
     </view>
 
-    <!-- 喝水快捷 -->
-    <view class="checkin-field">
-      <view class="field-label">
-        <text class="field-icon">💧</text>
-        <text>今日饮水快速打卡</text>
-      </view>
-      <view class="water-quick-set">
-        <button
-          wx:for="{{waterQuickBtns}}"
-          wx:key="*this"
-          class="water-qbtn {{todayWater >= item ? 'done' : ''}}"
-          bindtap="setWater"
-          data-count="{{item}}"
-        >{{item}}杯</button>
-      </view>
+    <view wx:if="{{!todayChecked}}" class="submit-area">
+      <button class="btn-primary full-width" bindtap="submitCheckin">
+        ✅ 完成今日打卡
+      </button>
     </view>
-
-    <!-- 拍照对比 -->
-    <view class="checkin-field">
-      <view class="field-label">
-        <text class="field-icon">📸</text>
-        <text>身材记录照（可跳过）</text>
-      </view>
-      <view class="photo-area" bindtap="takePhoto">
-        <view wx:if="{{!photoPath}}" class="photo-placeholder">
-          <text class="photo-plus">+</text>
-          <text>点击拍照</text>
-        </view>
-        <image wx:else class="photo-preview" src="{{photoPath}}" mode="aspectFill" />
-      </view>
-    </view>
-  </view>
-
-  <!-- 提交打卡 -->
-  <view wx:if="{{!todayChecked}}" class="submit-area">
-    <button class="btn-primary full-width" bindtap="submitCheckin">
-      ✅ 完成今日打卡
-    </button>
-  </view>
+  </block>
 
   <!-- 历史记录 -->
   <view wx:if="{{history.length > 0}}" class="mt-2">
@@ -121,7 +123,12 @@
         <text>喝水 {{item.water}}杯 · </text>
         <text>积分 +{{item.pointsEarned}}</text>
       </view>
+      <image wx:if="{{item.photoPath}}" class="history-photo" src="{{item.photoPath}}" mode="aspectFill" />
     </view>
+  </view>
+
+  <view wx:if="{{history.length === 0}}" class="empty-hint">
+    <text>还没有打卡记录</text>
   </view>
 
   <view style="height:40rpx;"></view>

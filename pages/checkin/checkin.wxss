@@ -225,3 +225,16 @@
   font-size: 28rpx;
   font-weight: 600;
 }
+
+.supervisor-banner {
+  background: linear-gradient(135deg, #eef0ff, #ffe0e6);
+  color: #5d45c8;
+}
+
+.history-photo {
+  width: 160rpx;
+  height: 220rpx;
+  border-radius: 14rpx;
+  margin-top: 16rpx;
+  display: block;
+}

@@ -158,6 +158,11 @@
   margin-bottom: 4rpx;
 }
 
+.supervisor-overlay {
+  background: rgba(238, 240, 255, 0.82);
+  color: #5d45c8;
+}
+
 /* === 已兑换 === */
 .redeemed-item {
   padding: 20rpx 24rpx;

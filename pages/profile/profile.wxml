@@ -1,166 +1,325 @@
 <scroll-view scroll-y class="container">
 
-  <!-- 用户头像区 -->
-  <view class="profile-header">
-    <view class="avatar-wrap">
-      <image wx:if="{{userInfo.avatar}}" class="avatar" src="{{userInfo.avatar}}" mode="aspectFill" />
-      <view wx:else class="avatar avatar-placeholder" bindtap="chooseAvatar">
-        <text class="avatar-emoji">👧</text>
-      </view>
+  <view class="room-strip">
+    <view>
+      <view class="room-title">房间 {{currentRoomId}}</view>
+      <view class="text-sm text-light">{{roleName}}模式</view>
     </view>
-    <view class="profile-name">{{userInfo.nickname}}</view>
-    <view class="profile-slogan">在校园里，健康瘦下来 💪</view>
+    <button class="btn-outline btn-sm" bindtap="switchRole">切换身份</button>
   </view>
 
-  <!-- 减重数据 -->
-  <view class="card stats-card">
-    <view class="stat-row">
-      <view class="stat-item">
-        <text class="stat-num text-primary">{{lostWeight}}kg</text>
-        <text class="stat-label">已减重</text>
+  <block wx:if="{{role === 'supervisor'}}">
+    <view class="profile-header admin-header">
+      <view class="avatar-wrap">
+        <view class="avatar avatar-placeholder">
+          <text class="avatar-emoji">🛡️</text>
+        </view>
       </view>
-      <view class="stat-item">
-        <text class="stat-num">{{checkinDays}}</text>
-        <text class="stat-label">累计打卡/天</text>
-      </view>
-      <view class="stat-item">
-        <text class="stat-num">{{totalPoints}}</text>
-        <text class="stat-label">累计积分</text>
-      </view>
+      <view class="profile-name">监督者管理台</view>
+      <view class="profile-slogan">食谱、奖励、活动、积分和打卡记录都在这里管</view>
     </view>
-    <view class="stat-row mt-1">
-      <view class="stat-item">
-        <text class="stat-num">{{bmi}}</text>
-        <text class="stat-label">当前BMI</text>
-      </view>
-      <view class="stat-item">
-        <text class="stat-num">{{weightChange7d}}</text>
-        <text class="stat-label">7天变化/kg</text>
-      </view>
-      <view class="stat-item">
-        <text class="stat-num">{{remainDays}}</text>
-        <text class="stat-label">预计剩余/天</text>
-      </view>
-    </view>
-  </view>
 
-  <!-- 目标设置 -->
-  <view class="card">
-    <view class="card-title">🎯 减重目标设置</view>
-    <view class="setting-item">
-      <text class="setting-label">当前体重 (kg)</text>
-      <input class="setting-input" type="digit" value="{{userInfo.currentWeight}}" bindinput="onFieldChange" data-field="currentWeight" />
-    </view>
-    <view class="setting-item">
-      <text class="setting-label">目标体重 (kg)</text>
-      <input class="setting-input" type="digit" value="{{userInfo.targetWeight}}" bindinput="onFieldChange" data-field="targetWeight" />
-    </view>
-    <view class="setting-item">
-      <text class="setting-label">初始体重 (kg)</text>
-      <input class="setting-input" type="digit" value="{{userInfo.startWeight}}" bindinput="onFieldChange" data-field="startWeight" />
-    </view>
-    <view class="setting-item">
-      <text class="setting-label">身高 (cm)</text>
-      <input class="setting-input" type="digit" value="{{userInfo.height}}" bindinput="onFieldChange" data-field="height" />
-    </view>
-    <view class="setting-item">
-      <text class="setting-label">开始日期</text>
-      <picker mode="date" value="{{userInfo.startDate}}" bindchange="onDateChange">
-        <view class="setting-picker">{{userInfo.startDate}}</view>
-      </picker>
-    </view>
-    <button class="btn-primary full-width mt-1" bindtap="saveSettings">💾 保存设置</button>
-  </view>
-
-  <!-- 数据管理 -->
-  <view class="card">
-    <view class="card-title">📦 数据管理</view>
-    <view class="menu-list">
-
-      <!-- 自定义食物 -->
-      <view class="menu-item" bindtap="manageFoods">
-        <view class="menu-left">
-          <text>🍽️ 我的自定义食物</text>
-          <text class="menu-count">{{customCounts.foods}}个</text>
+    <view class="card stats-card">
+      <view class="stat-row">
+        <view class="stat-item">
+          <text class="stat-num text-primary">{{totalPoints}}</text>
+          <text class="stat-label">当前积分</text>
         </view>
-        <text class="menu-arrow">→</text>
-      </view>
-
-      <!-- 自定义运动 -->
-      <view class="menu-item" bindtap="toggleExercisePanel">
-        <view class="menu-left">
-          <text>🏃‍♀️ 我的自定义运动</text>
-          <text class="menu-count">{{customCounts.exercises}}个</text>
+        <view class="stat-item">
+          <text class="stat-num">{{checkinDays}}</text>
+          <text class="stat-label">打卡天数</text>
         </view>
-        <text class="menu-arrow">{{showExercisePanel ? '▼' : '→'}}</text>
-      </view>
-      <view wx:if="{{showExercisePanel}}" class="manage-panel">
-        <view wx:if="{{customExercises.length === 0}}" class="empty-tip">
-          <text class="text-sm text-light">还没有自定义运动</text>
-        </view>
-        <view wx:for="{{customExercises}}" wx:key="id" class="manage-item">
-          <text>{{item.icon}} {{item.name}} ({{item.calPer30min}}大卡/30min)</text>
-          <text class="delete-btn" bindtap="deleteExercise" data-id="{{item.id}}">✕</text>
-        </view>
-        <view class="panel-actions">
-          <button class="btn-outline btn-sm" bindtap="showAddExercise">+ 添加自定义运动</button>
+        <view class="stat-item">
+          <text class="stat-num">{{pendingApplications.length}}</text>
+          <text class="stat-label">待处理申请</text>
         </view>
       </view>
+    </view>
 
-      <!-- 自定义奖励 -->
-      <view class="menu-item" bindtap="toggleRewardPanel">
-        <view class="menu-left">
-          <text>🎁 我的自定义奖励</text>
-          <text class="menu-count">{{customCounts.rewards}}个</text>
-        </view>
-        <text class="menu-arrow">{{showRewardPanel ? '▼' : '→'}}</text>
+    <view class="card">
+      <view class="card-title">📮 申请处理</view>
+      <view wx:if="{{pendingApplications.length === 0}}" class="empty-tip">
+        <text class="text-sm text-light">暂无待处理申请</text>
       </view>
-      <view wx:if="{{showRewardPanel}}" class="manage-panel">
-        <view wx:if="{{customRewards.length === 0}}" class="empty-tip">
-          <text class="text-sm text-light">还没有自定义奖励</text>
+      <view wx:for="{{pendingApplications}}" wx:key="id" class="application-item">
+        <view class="flex-between">
+          <text class="app-title">{{item.title}}</text>
+          <text class="status-pill {{item.statusClass}}">{{item.typeLabel}}</text>
         </view>
-        <view wx:for="{{customRewards}}" wx:key="id" class="manage-item">
-          <view class="manage-info">
-            <text>{{item.icon}} {{item.name}}</text>
-            <text class="text-sm text-light">{{item.points}}积分</text>
+        <view class="text-sm text-light mt-1">{{item.content}}</view>
+        <view class="text-sm text-light mt-1">{{item.createdDate}}</view>
+        <view class="app-actions">
+          <button class="btn-primary btn-sm" bindtap="handleApplication" data-id="{{item.id}}" data-status="approved">同意</button>
+          <button class="btn-outline btn-sm danger" bindtap="handleApplication" data-id="{{item.id}}" data-status="rejected">拒绝</button>
+        </view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">📜 打卡记录</view>
+      <view wx:if="{{history.length === 0}}" class="empty-tip">
+        <text class="text-sm text-light">还没有打卡记录</text>
+      </view>
+      <view wx:for="{{history}}" wx:key="date" class="history-row">
+        <view class="flex-between">
+          <text class="history-date">{{item.date}}</text>
+          <text class="text-primary">{{item.weight}}kg</text>
+        </view>
+        <view class="text-sm text-light mt-1">喝水 {{item.water}}杯 · 运动 {{item.exercises.length}}项 · +{{item.pointsEarned}}分</view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">⭐ 积分管理</view>
+      <view class="form-item">
+        <text class="form-label">调整积分</text>
+        <input class="form-input" type="number" placeholder="输入积分数量" value="{{pointForm.amount}}" bindinput="onPointAmount" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">原因</text>
+        <input class="form-input" placeholder="如：完成额外运动 / 偷吃扣分" value="{{pointForm.reason}}" bindinput="onPointReason" />
+      </view>
+      <view class="two-actions">
+        <button class="btn-primary" bindtap="adjustPoints" data-mode="add">加分</button>
+        <button class="btn-outline danger" bindtap="adjustPoints" data-mode="sub">扣分</button>
+      </view>
+      <view wx:if="{{pointLogs.length > 0}}" class="mt-1">
+        <view wx:for="{{pointLogs}}" wx:key="id" class="log-row">
+          <text>{{item.date}} · {{item.reason}}</text>
+          <text class="{{item.amount > 0 ? 'text-primary' : 'danger-text'}}">{{item.amount > 0 ? '+' : ''}}{{item.amount}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">📦 内容管理</view>
+      <view class="menu-list">
+        <view class="menu-item" bindtap="manageFoods">
+          <view class="menu-left">
+            <text>🍽️ 自定义食谱</text>
+            <text class="menu-count">{{customCounts.foods}}个</text>
           </view>
-          <text class="delete-btn" bindtap="deleteReward" data-id="{{item.id}}">✕</text>
+          <text class="menu-arrow">→</text>
         </view>
-        <view class="panel-actions">
-          <button class="btn-outline btn-sm" bindtap="showAddReward">+ 添加自定义奖励</button>
+
+        <view class="menu-item" bindtap="toggleExercisePanel">
+          <view class="menu-left">
+            <text>🏃‍♀️ 自定义运动</text>
+            <text class="menu-count">{{customCounts.exercises}}个</text>
+          </view>
+          <text class="menu-arrow">{{showExercisePanel ? '▼' : '→'}}</text>
+        </view>
+        <view wx:if="{{showExercisePanel}}" class="manage-panel">
+          <view wx:if="{{customExercises.length === 0}}" class="empty-tip">
+            <text class="text-sm text-light">还没有自定义运动</text>
+          </view>
+          <view wx:for="{{customExercises}}" wx:key="id" class="manage-item">
+            <text>{{item.icon}} {{item.name}} ({{item.calPer30min}}大卡/30min)</text>
+            <view class="mini-actions">
+              <text class="text-primary" bindtap="editExercise" data-item="{{item}}">编辑</text>
+              <text class="delete-btn" bindtap="deleteExercise" data-id="{{item.id}}">✕</text>
+            </view>
+          </view>
+          <view class="panel-actions">
+            <button class="btn-outline btn-sm" bindtap="showAddExercise">+ 添加运动</button>
+          </view>
+        </view>
+
+        <view class="menu-item" bindtap="toggleRewardPanel">
+          <view class="menu-left">
+            <text>🎁 自定义奖励</text>
+            <text class="menu-count">{{customCounts.rewards}}个</text>
+          </view>
+          <text class="menu-arrow">{{showRewardPanel ? '▼' : '→'}}</text>
+        </view>
+        <view wx:if="{{showRewardPanel}}" class="manage-panel">
+          <view wx:if="{{customRewards.length === 0}}" class="empty-tip">
+            <text class="text-sm text-light">还没有自定义奖励</text>
+          </view>
+          <view wx:for="{{customRewards}}" wx:key="id" class="manage-item">
+            <view class="manage-info">
+              <text>{{item.icon}} {{item.name}}</text>
+              <text class="text-sm text-light">{{item.points}}积分</text>
+            </view>
+            <view class="mini-actions">
+              <text class="text-primary" bindtap="editReward" data-item="{{item}}">编辑</text>
+              <text class="delete-btn" bindtap="deleteReward" data-id="{{item.id}}">✕</text>
+            </view>
+          </view>
+          <view class="panel-actions">
+            <button class="btn-outline btn-sm" bindtap="showAddReward">+ 添加奖励</button>
+          </view>
+        </view>
+
+        <view class="menu-item" bindtap="toggleActivityPanel">
+          <view class="menu-left">
+            <text>🌟 活动挑战</text>
+            <text class="menu-count">{{activities.length}}个</text>
+          </view>
+          <text class="menu-arrow">{{showActivityPanel ? '▼' : '→'}}</text>
+        </view>
+        <view wx:if="{{showActivityPanel}}" class="manage-panel">
+          <view wx:for="{{activities}}" wx:key="id" class="manage-item">
+            <view class="manage-info">
+              <text>{{item.icon}} {{item.name}}</text>
+              <text class="text-sm text-light">{{item.points}}积分 · {{item.active ? '已开启' : '已停用'}}</text>
+            </view>
+            <view class="mini-actions">
+              <text class="text-primary" bindtap="editActivity" data-item="{{item}}">编辑</text>
+              <text class="text-primary" bindtap="toggleActivity" data-id="{{item.id}}">{{item.active ? '停用' : '开启'}}</text>
+              <text class="delete-btn" bindtap="deleteActivity" data-id="{{item.id}}">✕</text>
+            </view>
+          </view>
+          <view class="panel-actions">
+            <button class="btn-outline btn-sm" bindtap="showAddActivity">+ 添加活动</button>
+          </view>
         </view>
       </view>
-
     </view>
-  </view>
+  </block>
 
-  <!-- 快捷入口 -->
+  <block wx:else>
+    <view class="profile-header">
+      <view class="avatar-wrap">
+        <image wx:if="{{userInfo.avatar}}" class="avatar" src="{{userInfo.avatar}}" mode="aspectFill" bindtap="chooseAvatar" />
+        <view wx:else class="avatar avatar-placeholder" bindtap="chooseAvatar">
+          <text class="avatar-emoji">👧</text>
+        </view>
+      </view>
+      <view class="profile-name">{{userInfo.nickname}}</view>
+      <view class="profile-slogan">在校园里，健康瘦下来 💪</view>
+    </view>
+
+    <view class="card stats-card">
+      <view class="stat-row">
+        <view class="stat-item">
+          <text class="stat-num text-primary">{{lostWeight}}kg</text>
+          <text class="stat-label">已减重</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-num">{{checkinDays}}</text>
+          <text class="stat-label">累计打卡/天</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-num">{{totalPoints}}</text>
+          <text class="stat-label">累计积分</text>
+        </view>
+      </view>
+      <view class="stat-row mt-1">
+        <view class="stat-item">
+          <text class="stat-num">{{bmi}}</text>
+          <text class="stat-label">当前BMI</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-num">{{weightChange7d}}</text>
+          <text class="stat-label">7天变化/kg</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-num">{{remainDays}}</text>
+          <text class="stat-label">预计剩余/天</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">🎯 减重目标设置</view>
+      <view class="setting-item">
+        <text class="setting-label">当前体重 (kg)</text>
+        <input class="setting-input" type="digit" value="{{userInfo.currentWeight}}" bindinput="onFieldChange" data-field="currentWeight" />
+      </view>
+      <view class="setting-item">
+        <text class="setting-label">目标体重 (kg)</text>
+        <input class="setting-input" type="digit" value="{{userInfo.targetWeight}}" bindinput="onFieldChange" data-field="targetWeight" />
+      </view>
+      <view class="setting-item">
+        <text class="setting-label">初始体重 (kg)</text>
+        <input class="setting-input" type="digit" value="{{userInfo.startWeight}}" bindinput="onFieldChange" data-field="startWeight" />
+      </view>
+      <view class="setting-item">
+        <text class="setting-label">身高 (cm)</text>
+        <input class="setting-input" type="digit" value="{{userInfo.height}}" bindinput="onFieldChange" data-field="height" />
+      </view>
+      <view class="setting-item">
+        <text class="setting-label">开始日期</text>
+        <picker mode="date" value="{{userInfo.startDate}}" bindchange="onDateChange">
+          <view class="setting-picker">{{userInfo.startDate}}</view>
+        </picker>
+      </view>
+      <button class="btn-primary full-width mt-1" bindtap="saveSettings">💾 保存设置</button>
+    </view>
+
+    <view class="card">
+      <view class="card-title">📮 申请中心</view>
+      <view class="form-item">
+        <text class="form-label">申请类型</text>
+        <picker mode="selector" range="{{applicationTypeNames}}" value="{{appForm.typeIdx}}" bindchange="onAppType">
+          <view class="form-picker">{{applicationTypeNames[appForm.typeIdx]}}</view>
+        </picker>
+      </view>
+      <view class="form-item">
+        <text class="form-label">想要什么</text>
+        <input class="form-input" placeholder="如：想吃低卡麻辣烫 / 想要奶茶奖励" value="{{appForm.title}}" bindinput="onAppTitle" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">补充说明</text>
+        <textarea class="form-input textarea" placeholder="可以写原因、时间、具体想法" value="{{appForm.content}}" bindinput="onAppContent" />
+      </view>
+      <button class="btn-primary full-width" bindtap="submitApplication">提交给监督者</button>
+    </view>
+
+    <view wx:if="{{applications.length > 0}}" class="card">
+      <view class="card-title">📬 我的申请记录</view>
+      <view wx:for="{{applications}}" wx:key="id" class="application-item">
+        <view class="flex-between">
+          <text class="app-title">{{item.title}}</text>
+          <text class="status-pill {{item.statusClass}}">{{item.statusText}}</text>
+        </view>
+        <view class="text-sm text-light mt-1">{{item.typeLabel}} · {{item.createdDate}}</view>
+        <view class="text-sm text-light mt-1">{{item.content}}</view>
+        <view wx:if="{{item.reply}}" class="reply-box">{{item.reply}}</view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">🔗 快捷入口</view>
+      <view class="menu-list">
+        <view class="menu-item" bindtap="goCheckin">
+          <text>✅ 每日打卡</text>
+          <text class="menu-arrow">→</text>
+        </view>
+        <view class="menu-item" bindtap="goRewards">
+          <text>🎁 奖励兑换</text>
+          <text class="menu-arrow">→</text>
+        </view>
+        <view class="menu-item" bindtap="goRecipes">
+          <text>🍽️ 校园食物库</text>
+          <text class="menu-arrow">→</text>
+        </view>
+        <view class="menu-item" bindtap="resetToday">
+          <text>🔄 重置今日数据</text>
+          <text class="menu-arrow">→</text>
+        </view>
+      </view>
+    </view>
+  </block>
+
   <view class="card">
-    <view class="card-title">🔗 快捷入口</view>
+    <view class="card-title">🏠 房间操作</view>
     <view class="menu-list">
-      <view class="menu-item" bindtap="goRewards">
-        <text>🎁 奖励兑换</text>
+      <view class="menu-item" bindtap="leaveRoom">
+        <text>退出当前房间</text>
         <text class="menu-arrow">→</text>
       </view>
-      <view class="menu-item" bindtap="goRecipes">
-        <text>🍽️ 校园食物库</text>
-        <text class="menu-arrow">→</text>
-      </view>
-      <view class="menu-item" bindtap="resetToday">
-        <text>🔄 重置今日数据</text>
-        <text class="menu-arrow">→</text>
-      </view>
-      <view class="menu-item" bindtap="clearAll">
-        <text>🗑️ 清除所有数据</text>
+      <view class="menu-item" bindtap="clearRoom">
+        <text style="color:var(--danger)">删除当前房间本地数据</text>
         <text class="menu-arrow" style="color:var(--danger)">⚠️</text>
       </view>
     </view>
   </view>
 
-  <!-- 关于 -->
   <view class="about-card text-center">
     <text class="text-sm text-light">💕 Made with Love by 你的回族男朋友</text>
-    <text class="text-sm text-light mt-1">校园减重 · 清真饮食 · 一起变好</text>
+    <text class="text-sm text-light mt-1">房间协作 · 监督陪伴 · 一起变好</text>
   </view>
 
   <view style="height:120rpx;"></view>
@@ -170,7 +329,7 @@
 <view wx:if="{{showAddExModal}}" class="modal-mask" bindtap="closeAddEx"></view>
 <view wx:if="{{showAddExModal}}" class="modal-panel">
   <view class="modal-header">
-    <text class="modal-title">添加自定义运动</text>
+    <text class="modal-title">{{editingExercise ? '编辑自定义运动' : '添加自定义运动'}}</text>
     <text class="modal-close" bindtap="closeAddEx">✕</text>
   </view>
   <view class="modal-body">
@@ -188,7 +347,7 @@
     </view>
   </view>
   <view class="modal-footer">
-    <button class="btn-primary" bindtap="saveExercise">✅ 添加</button>
+    <button class="btn-primary" bindtap="saveExercise">{{editingExercise ? '💾 保存' : '✅ 添加'}}</button>
   </view>
 </view>
 
@@ -196,7 +355,7 @@
 <view wx:if="{{showAddRwModal}}" class="modal-mask" bindtap="closeAddRw"></view>
 <view wx:if="{{showAddRwModal}}" class="modal-panel">
   <view class="modal-header">
-    <text class="modal-title">添加自定义奖励</text>
+    <text class="modal-title">{{editingReward ? '编辑自定义奖励' : '添加自定义奖励'}}</text>
     <text class="modal-close" bindtap="closeAddRw">✕</text>
   </view>
   <view class="modal-body">
@@ -218,6 +377,36 @@
     </view>
   </view>
   <view class="modal-footer">
-    <button class="btn-primary" bindtap="saveReward">✅ 添加</button>
+    <button class="btn-primary" bindtap="saveReward">{{editingReward ? '💾 保存' : '✅ 添加'}}</button>
+  </view>
+</view>
+
+<!-- 添加活动弹窗 -->
+<view wx:if="{{showAddActModal}}" class="modal-mask" bindtap="closeAddAct"></view>
+<view wx:if="{{showAddActModal}}" class="modal-panel">
+  <view class="modal-header">
+    <text class="modal-title">{{editingActivity ? '编辑活动挑战' : '添加活动挑战'}}</text>
+    <text class="modal-close" bindtap="closeAddAct">✕</text>
+  </view>
+  <view class="modal-body">
+    <view class="form-item">
+      <text class="form-label">活动名称 *</text>
+      <input class="form-input" placeholder="如：周三操场散步" value="{{actForm.name}}" bindinput="onActName" />
+    </view>
+    <view class="form-item">
+      <text class="form-label">完成积分 *</text>
+      <input class="form-input" type="digit" placeholder="如：20" value="{{actForm.points}}" bindinput="onActPoints" />
+    </view>
+    <view class="form-item">
+      <text class="form-label">描述</text>
+      <input class="form-input" placeholder="如：晚上一起走30分钟" value="{{actForm.desc}}" bindinput="onActDesc" />
+    </view>
+    <view class="form-item">
+      <text class="form-label">图标Emoji</text>
+      <input class="form-input" placeholder="如：🌟" value="{{actForm.icon}}" bindinput="onActIcon" />
+    </view>
+  </view>
+  <view class="modal-footer">
+    <button class="btn-primary" bindtap="saveActivity">{{editingActivity ? '💾 保存' : '✅ 添加'}}</button>
   </view>
 </view>

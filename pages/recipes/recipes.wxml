@@ -26,8 +26,11 @@
 
   <!-- 添加按钮 -->
   <view class="add-bar">
-    <button class="btn-primary add-btn" bindtap="showAddModal">
+    <button wx:if="{{role === 'supervisor'}}" class="btn-primary add-btn" bindtap="showAddModal">
       ➕ 添加自定义食物
+    </button>
+    <button wx:else class="btn-outline add-btn" bindtap="goApply">
+      📮 想要新食谱，去申请
     </button>
   </view>
 
@@ -67,7 +70,7 @@
         <text class="cal-val">{{item.calories}}</text>
         <text class="cal-unit">大卡</text>
       </view>
-      <view wx:if="{{item.isCustom}}" class="delete-tip text-sm text-light">长按删除</view>
+      <view wx:if="{{item.isCustom && role === 'supervisor'}}" class="delete-tip text-sm text-light">长按编辑</view>
     </view>
   </view>
 

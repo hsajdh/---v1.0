@@ -3,11 +3,13 @@ const app = getApp();
 
 Page({
   data: {
+    role: 'beauty',
     food: null,
     categoryName: ''
   },
 
   onLoad(options) {
+    if (!app.ensureRoom()) return;
     const id = options.id;
     const allFoods = getFoods();
     const food = allFoods.find(f => f.id === id);
@@ -15,6 +17,7 @@ Page({
       const categories = getFoodCategories();
       const cat = categories.find(c => c.id === food.category);
       this.setData({
+        role: app.globalData.currentRole,
         food: food,
         categoryName: cat ? (cat.icon + ' ' + cat.name) : '自定义'
       });
@@ -23,6 +26,10 @@ Page({
   },
 
   recordCalories() {
+    if (app.isSupervisor()) {
+      wx.showToast({ title: '监督者无需记录饮食', icon: 'none' });
+      return;
+    }
     const food = this.data.food;
     if (!food) return;
 
@@ -45,17 +52,16 @@ Page({
 
   editFood() {
     const food = this.data.food;
-    if (!food || !food.isCustom) return;
+    if (!food || !food.isCustom || !app.isSupervisor()) return;
 
-    // Navigate to food library page and trigger edit
-    wx.switchTab({ url: '/pages/recipes/recipes' });
     // Store edit target in global for recipes page to pick up
     app.globalData._editFood = food;
+    wx.switchTab({ url: '/pages/recipes/recipes' });
   },
 
   deleteFood() {
     const food = this.data.food;
-    if (!food || !food.isCustom) return;
+    if (!food || !food.isCustom || !app.isSupervisor()) return;
 
     wx.showModal({
       title: '确认删除',
@@ -71,5 +77,9 @@ Page({
         }
       }
     });
+  },
+
+  goApply() {
+    wx.switchTab({ url: '/pages/profile/profile' });
   }
 });

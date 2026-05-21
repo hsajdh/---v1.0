@@ -77,10 +77,13 @@
 
     <!-- 操作按钮 -->
     <view class="action-bar">
-      <button class="btn-primary full-width" bindtap="recordCalories">
+      <button wx:if="{{role !== 'supervisor'}}" class="btn-primary full-width" bindtap="recordCalories">
         📝 我吃了这个（+{{food.calories}}大卡）
       </button>
-      <view wx:if="{{food.isCustom}}" class="action-sub">
+      <button wx:else class="btn-outline full-width" bindtap="goApply">
+        🛡️ 监督者查看模式
+      </button>
+      <view wx:if="{{food.isCustom && role === 'supervisor'}}" class="action-sub">
         <button class="btn-outline btn-sm" bindtap="editFood">✏️ 编辑</button>
         <button class="btn-outline btn-sm danger" bindtap="deleteFood">🗑️ 删除</button>
       </view>

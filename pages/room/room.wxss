@@ -1,0 +1,109 @@
+.room-page {
+  min-height: 100vh;
+  padding: 48rpx 28rpx;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, #fff5f7 0%, #ffffff 100%);
+}
+
+.room-hero {
+  text-align: center;
+  padding: 40rpx 12rpx 34rpx;
+}
+
+.room-heart {
+  font-size: 72rpx;
+  margin-bottom: 16rpx;
+}
+
+.room-title {
+  font-size: 48rpx;
+  font-weight: 800;
+  color: #2f2f2f;
+  margin-bottom: 14rpx;
+}
+
+.room-subtitle {
+  font-size: 26rpx;
+  color: #888;
+  line-height: 1.7;
+}
+
+.room-card {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  box-shadow: 0 12rpx 40rpx rgba(255, 107, 138, 0.12);
+}
+
+.form-item {
+  margin-bottom: 28rpx;
+}
+
+.form-label {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 700;
+  margin-bottom: 12rpx;
+}
+
+.room-input {
+  height: 88rpx;
+  background: #fff5f7;
+  border-radius: 16rpx;
+  padding: 0 24rpx;
+  font-size: 30rpx;
+  box-sizing: border-box;
+}
+
+.role-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+}
+
+.role-card {
+  min-height: 240rpx;
+  background: #fafafa;
+  border: 2rpx solid transparent;
+  border-radius: 18rpx;
+  padding: 22rpx 18rpx;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.role-card.active {
+  background: #ffe0e6;
+  border-color: #ff6b8a;
+}
+
+.role-icon {
+  font-size: 52rpx;
+  margin-bottom: 10rpx;
+}
+
+.role-name {
+  font-size: 30rpx;
+  font-weight: 800;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.role-desc {
+  font-size: 22rpx;
+  color: #777;
+  line-height: 1.45;
+}
+
+.full-width {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.room-note {
+  margin-top: 28rpx;
+  padding: 0 12rpx;
+  color: #999;
+  font-size: 24rpx;
+  line-height: 1.7;
+  text-align: center;
+}

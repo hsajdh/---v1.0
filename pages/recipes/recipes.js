@@ -3,6 +3,7 @@ const app = getApp();
 
 Page({
   data: {
+    role: 'beauty',
     categories: [],
     categoryNames: [],
     activeCategory: 'canteen',
@@ -17,14 +18,20 @@ Page({
   },
 
   onShow() {
+    if (!app.ensureRoom()) return;
     this.loadFoods();
+    if (app.globalData._editFood && app.isSupervisor()) {
+      const target = app.globalData._editFood;
+      app.globalData._editFood = null;
+      this.openEditFood(target);
+    }
   },
 
   loadFoods() {
     const categories = getFoodCategories();
     const allFoods = getFoods();
     const categoryNames = categories.map(c => c.icon + ' ' + c.name);
-    this.setData({ categories, categoryNames, allFoods });
+    this.setData({ categories, categoryNames, allFoods, role: app.globalData.currentRole });
     this.filterFoods(this.data.activeCategory);
   },
 
@@ -51,10 +58,45 @@ Page({
 
   onLongPress(e) {
     const item = e.currentTarget.dataset.item;
+    if (!app.isSupervisor()) {
+      wx.showToast({ title: '只有监督者可以删除自定义食物', icon: 'none' });
+      return;
+    }
     if (!item.isCustom) {
       wx.showToast({ title: '默认食物不可删除', icon: 'none' });
       return;
     }
+    wx.showActionSheet({
+      itemList: ['编辑食物', '删除食物'],
+      success: (res) => {
+        if (res.tapIndex === 0) {
+          this.openEditFood(item);
+        } else {
+          this.confirmDeleteFood(item);
+        }
+      }
+    });
+  },
+
+  openEditFood(item) {
+    const catIdx = Math.max(0, this.data.categories.findIndex(c => c.id === item.category));
+    this.setData({
+      showAdd: true,
+      editingFood: item,
+      formData: {
+        name: item.name || '',
+        calories: item.calories || '',
+        unit: item.unit || '',
+        icon: item.icon || '',
+        protein: item.protein || '',
+        carbs: item.carbs || '',
+        fat: item.fat || '',
+        catIdx
+      }
+    });
+  },
+
+  confirmDeleteFood(item) {
     wx.showModal({
       title: '删除食物',
       content: `确定删除"${item.name}"吗？`,
@@ -71,6 +113,10 @@ Page({
 
   /* ===== 添加/编辑弹窗 ===== */
   showAddModal() {
+    if (!app.isSupervisor()) {
+      wx.showToast({ title: '想吃新食谱可以去“我的”提交申请', icon: 'none' });
+      return;
+    }
     this.setData({
       showAdd: true,
       editingFood: null,
@@ -152,5 +198,9 @@ Page({
         }
       }
     });
+  },
+
+  goApply() {
+    wx.switchTab({ url: '/pages/profile/profile' });
   }
 });

@@ -3,6 +3,7 @@ const app = getApp();
 
 Page({
   data: {
+    role: 'beauty',
     totalPoints: 0,
     rewards: getRewards(),
     punishments: defaultPunishments,
@@ -10,14 +11,23 @@ Page({
   },
 
   onShow() {
-    const redeemed = wx.getStorageSync('redeemed') || [];
+    if (!app.ensureRoom()) return;
+    const room = app.globalData.roomData || {};
+    const redeemed = room.redeemed || [];
     this.setData({
+      role: app.globalData.currentRole,
       totalPoints: app.globalData.totalPoints,
+      rewards: getRewards(),
       redeemedList: redeemed
     });
   },
 
   redeemReward(e) {
+    if (this.data.role === 'supervisor') {
+      wx.showToast({ title: '监督者可在“我的”管理奖励', icon: 'none' });
+      return;
+    }
+
     const item = e.currentTarget.dataset.item;
     const { totalPoints } = this.data;
 
@@ -38,14 +48,23 @@ Page({
       success: (res) => {
         if (res.confirm) {
           app.globalData.totalPoints -= item.points;
-          app.saveData();
+          const room = app.globalData.roomData;
 
-          const redeemed = wx.getStorageSync('redeemed') || [];
+          const redeemed = room.redeemed || [];
           redeemed.unshift({
             ...item,
             date: app.getDateString()
           });
-          wx.setStorageSync('redeemed', redeemed);
+          room.redeemed = redeemed;
+          room.pointLogs = room.pointLogs || [];
+          room.pointLogs.unshift({
+            id: 'plog_' + Date.now(),
+            date: app.getDateString(),
+            amount: -item.points,
+            reason: `兑换奖励：${item.name}`,
+            operator: '变美者'
+          });
+          app.saveData();
 
           this.setData({
             totalPoints: app.globalData.totalPoints,
